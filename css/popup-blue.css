@@ -17,6 +17,7 @@
 	white-space: normal;
 	word-spacing: normal;
 	font: normal 14px sans-serif;
+	font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
 	visibility: visible;
 }
 
@@ -73,7 +74,6 @@
 }
 
 #rikaisensei-window .k-kanji {
-	font-family: serif;
 	font-size: 48px;
 	color: #B7E7FF;
 }

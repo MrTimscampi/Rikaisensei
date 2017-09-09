@@ -1,5 +1,11 @@
 ﻿/*
 
+	Rikaisensei
+	Copyright (C) 2017 Julien Machiels
+	https://github.com/MrTimscampi/Rikaisensei
+
+	---
+
 	Rikaikun
 	Copyright (C) 2010 Erek Speed
 	http://code.google.com/p/rikaikun/
