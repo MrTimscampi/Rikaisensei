@@ -1,4 +1,4 @@
-function fillVals() {
+function restoreOptions(e) {
 	var store = localStorage['popupcolor'];
 	for(var i=0; i < document.optform.popupcolor.length; ++i) {
 		if(document.optform.popupcolor[i].value == store) {
@@ -73,64 +73,54 @@ function fillVals() {
 
 }
 
-function getVals() {
-	localStorage['popupcolor'] = document.optform.popupcolor.value;
-	localStorage['highlight'] = document.optform.highlighttext.checked;
-	localStorage['textboxhl'] = document.optform.textboxhl.checked;
-	localStorage['onlyreading'] = document.optform.onlyreading.checked;
-	localStorage['minihelp'] = document.optform.minihelp.checked;
-	localStorage['disablekeys'] = document.optform.disablekeys.checked;
-	localStorage['kanjicomponents'] = document.optform.kanjicomponents.checked;
+function saveOptions(e) {
+	e.preventDefault();
+
+	browser.storage.local.set({
+        popupColor: document.optform.popupcolor.value,
+        highlight: document.optform.highlighttext.checked,
+        textBoxHl: document.optform.textboxhl.checked,
+        onlyReading: document.optform.onlyreading.checked,
+        miniHelp: document.optform.minihelp.checked,
+        disableKeys: document.optform.disablekeys.checked,
+        kanjiComponents: document.optform.kanjicomponents.checked,
+        lineEnding: document.optform.lineEnding.value,
+        copySeparator: document.optform.copySeparator.value,
+        maxClipCopyEntries: document.optform.maxClipCopyEntries.value
+    });
+
 
 	var kanjiinfoarray = new Array(browser.extension.getBackgroundPage().rcxDict.prototype.numList.length/2);
-	numList = browser.extension.getBackgroundPage().rcxDict.prototype.numList;
+	var numList = browser.extension.getBackgroundPage().rcxDict.prototype.numList;
 	for (i = 0; i*2 < numList.length; i++) {
 		localStorage[numList[i*2]] = document.getElementById(numList[i*2]).checked;
 		kanjiinfoarray[i] = localStorage[numList[i*2]];
 	}
 
-	localStorage['lineEnding'] = document.optform.lineEnding.value;
-	localStorage['copySeparator'] = document.optform.copySeparator.value;
-	localStorage['maxClipCopyEntries'] = document.optform.maxClipCopyEntries.value;
-
-	var popupDelay;
-	try {
-		popupDelay = parseInt(document.optform.popupDelay.value);
-		if (!isFinite(popupDelay)) {
-			throw Error('infinite');
-		}
-		localStorage['popupDelay'] = document.optform.popupDelay.value;
-	} catch (err) {
-		popupDelay = 150;
-		localStorage['popupDelay'] = "150";
+	var popupDelay = parseInt(document.optform.popupDelay.value);
+	if (!isFinite(popupDelay)) {
+        popupDelay = 150;
 	}
-	localStorage['showOnKey'] = document.optform.showOnKey.value;
+    browser.storage.local.set({
+        popupDelay: document.optform.popupDelay.value,
+        showOnKey: document.optform.showOnKey.value
+    });
 
-	browser.extension.getBackgroundPage().rcxMain.config.css = localStorage["popupcolor"];
-	browser.extension.getBackgroundPage().rcxMain.config.highlight = localStorage["highlight"];
-	browser.extension.getBackgroundPage().rcxMain.config.textboxhl = localStorage["textboxhl"];
-	browser.extension.getBackgroundPage().rcxMain.config.onlyreading = localStorage["onlyreading"];
-	browser.extension.getBackgroundPage().rcxMain.config.minihelp = localStorage["minihelp"];
+	browser.extension.getBackgroundPage().rcxMain.config.css = browser.storage.local.get("popupcolor");
+	browser.extension.getBackgroundPage().rcxMain.config.highlight = browser.storage.local.get("highlight");
+	browser.extension.getBackgroundPage().rcxMain.config.textboxhl = browser.storage.local.get("textboxhl");
+	browser.extension.getBackgroundPage().rcxMain.config.onlyreading = browser.storage.local.get("onlyreading");
+	browser.extension.getBackgroundPage().rcxMain.config.minihelp = browser.storage.local.get("minihelp");
 	browser.extension.getBackgroundPage().rcxMain.config.popupDelay = popupDelay;
-	browser.extension.getBackgroundPage().rcxMain.config.disablekeys = localStorage["disablekeys"];
-	browser.extension.getBackgroundPage().rcxMain.config.showOnKey = localStorage["showOnKey"];
-	browser.extension.getBackgroundPage().rcxMain.config.kanjicomponents = localStorage["kanjicomponents"];
+	browser.extension.getBackgroundPage().rcxMain.config.disablekeys = browser.storage.local.get("disablekeys");
+	browser.extension.getBackgroundPage().rcxMain.config.showOnKey = browser.storage.local.get("showOnKey");
+	browser.extension.getBackgroundPage().rcxMain.config.kanjicomponents = browser.storage.local.get("kanjicomponents");
 	browser.extension.getBackgroundPage().rcxMain.config.kanjiinfo = kanjiinfoarray;
-	browser.extension.getBackgroundPage().rcxMain.config.lineEnding = localStorage["lineEnding"];
-	browser.extension.getBackgroundPage().rcxMain.config.copySeparator = localStorage["copySeparator"];
-	browser.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = localStorage["maxClipCopyEntries"];
+	browser.extension.getBackgroundPage().rcxMain.config.lineEnding = browser.storage.local.get("lineEnding");
+	browser.extension.getBackgroundPage().rcxMain.config.copySeparator = browser.storage.local.get("copySeparator");
+	browser.extension.getBackgroundPage().rcxMain.config.maxClipCopyEntries = browser.storage.local.get("maxClipCopyEntries");
 
 }
-window.onload = fillVals;
 
-/*function clicktab(tab) {
-	selectedtab = document.getElementById(tab);
-	// change format of all tabs to deselected
-	// change format of selected tab to selected
-	// hide all tab contents
-	// show selected tab contents
-}*/
-
-
-document.querySelector('#submit').addEventListener('click', getVals);
-
+document.querySelector("form").addEventListener("submit", saveOptions);
+document.addEventListener("DOMContentLoaded", restoreOptions);
