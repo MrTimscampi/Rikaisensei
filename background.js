@@ -1,7 +1,7 @@
 
-chrome.browserAction.onClicked.addListener(rcxMain.inlineToggle);
-chrome.tabs.onSelectionChanged.addListener(rcxMain.onTabSelect);
-chrome.runtime.onMessage.addListener(
+browser.browserAction.onClicked.addListener(rcxMain.inlineToggle);
+browser.tabs.onActivated.addListener(rcxMain.onTabSelect);
+browser.runtime.onMessage.addListener(
 	function(request, sender, response) {
 		switch(request.type) {
 			case 'enable?':
@@ -10,8 +10,7 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case 'xsearch':
 				console.log('xsearch');
-				var e = rcxMain.search(request.text, request.dictOption);
-				response(e);
+				response(rcxMain.search(request.text, request.dictOption));
 				break;
 /*			case 'nextDict':
 				console.log('nextDict');
@@ -23,17 +22,15 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case 'translate':
 				console.log('translate');
-				var e = rcxMain.dict.translate(request.title);
-				response(e);
+				response(rcxMain.dict.translate(request.title));
 				break;
 			case 'makehtml':
 				console.log('makehtml');
-				var html = rcxMain.dict.makeHtml(request.entry);
-				response(html);
+				response(rcxMain.dict.makeHtml(request.entry));
 				break;
 			case 'switchOnlyReading':
 				console.log('switchOnlyReading');
-				if(rcxMain.config.onlyreading == 'true')
+				if(rcxMain.config.onlyreading === 'true')
 					rcxMain.config.onlyreading = 'false';
 				else
 					rcxMain.config.onlyreading = 'true';

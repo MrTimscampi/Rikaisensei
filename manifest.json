@@ -1,14 +1,15 @@
 {
 	"manifest_version": 2,
 	
-	"name": "rikaikun",
-	"version": "0.8.92",
+	"name": "Rikaisensei",
+	"version": "0.1.0",
 	
-	"description": "A port of rikaichan for chrome. Translate Japanese by hovering over words.",
+	"description": "A reading aid for Japanese learners.",
 	"icons": { "48": "images/icon48.png",
 				"128": "images/icon128.png"},
 	
 	"permissions": [
+		"activeTab",
 		"tabs",
 		"clipboardWrite"
 	],
@@ -19,7 +20,8 @@
 	},
 	
 	"browser_action": {
-		"default_icon": "images/ba.png"
+		"default_icon": "images/ba.png",
+		"default_title": "Rikaisensei"
 	},
 	
 	"options_page": "options.html",

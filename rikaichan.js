@@ -104,9 +104,9 @@ var rcxMain = {
 				try {
 					a = !this.cfg[c + 'toggle'];
 					b = !this.cfg[c + 'lbar'];
-					document.getElementById('rikaichan-toggle-' + c).hidden = a;
-					document.getElementById('rikaichan-lbar-' + c).hidden = b;
-					document.getElementById('rikaichan-separator-' + xm[i]).hidden = a || b;
+					document.getElementById('rikaisensei-toggle-' + c).hidden = a;
+					document.getElementById('rikaisensei-lbar-' + c).hidden = b;
+					document.getElementById('rikaisensei-separator-' + xm[i]).hidden = a || b;
 				}
 				catch (ex) {
 					//	alert('unable to set menu: c=' + c + ' ex=' + ex)
@@ -125,10 +125,10 @@ var rcxMain = {
 				break;
 			}
 
-			this.cfg.css = (this.cfg.css.indexOf('/') == -1) ? ('chrome://rikaichan/skin/popup-' + this.cfg.css + '.css') : this.cfg.css;
+			this.cfg.css = (this.cfg.css.indexOf('/') == -1) ? ('chrome://rikaisensei/skin/popup-' + this.cfg.css + '.css') : this.cfg.css;
 			if (!this.isTB) {
 				for (i = 0; i < gBrowser.browsers.length; ++i) {
-					c = gBrowser.browsers[i].contentDocument.getElementById('rikaichan-css');
+					c = gBrowser.browsers[i].contentDocument.getElementById('rikaisensei-css');
 					if (c) c.setAttribute('href', this.cfg.css);
 				}
 			}
@@ -148,7 +148,7 @@ var rcxMain = {
 
 			if (this.isTB) this.cfg.enmode = 0;
 
-			b = document.getElementById('rikaichan-status');
+			b = document.getElementById('rikaisensei-status');
 			if (b) b.hidden = (this.cfg.sticon == 0);
 		}
 		catch (ex) {
@@ -176,7 +176,7 @@ var rcxMain = {
 	},
 /*
 	showDownload: function() {
-		const url = 'http://rikaichan.mozdev.org/welcome.html';
+		const url = 'http://rikaisensei.mozdev.org/welcome.html';
 
 		try {
 			var u = '';
@@ -205,10 +205,10 @@ var rcxMain = {
 		}
 		catch (ex) {
 			if (typeof(rcxWordDict) == 'undefined') {
-				alert('[rikaichan] Please install a dictionary file from ' + url);
+				alert('[rikaisensei] Please install a dictionary file from ' + url);
 			}
 			else {
-				alert('[rikaichan] There was an error while opening ' + url);
+				alert('[rikaisensei] There was an error while opening ' + url);
 			}
 		}
 	},
@@ -221,8 +221,8 @@ var rcxMain = {
 	onTabSelect: function(tabId) { rcxMain._onTabSelect(tabId); },
 	_onTabSelect: function(tabId) {
 
-		if ((this.enabled == 1))
-			chrome.tabs.sendMessage(tabId, {"type":"enable", "config":rcxMain.config});
+		if ((this.enabled === 1))
+			browser.tabs.sendMessage(tabId, {"type":"enable", "config":rcxMain.config});
 	},
 
 	savePrep: function(clip, entry) {
@@ -283,12 +283,12 @@ var rcxMain = {
 			};
 			document.execCommand("Copy");
 			document.oncopy = undefined;
-			chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Copied to clipboard.'});
+			browser.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Copied to clipboard.'});
 		}
 	},
 
 	miniHelp:
-		'<span style="font-weight:bold">Rikaikun enabled!</span><br><br>' +
+		'<span style="font-weight:bold">Rikaisensei enabled!</span><br><br>' +
 		'<table cellspacing=5>' +
 		'<tr><td>A</td><td>Alternate popup location</td></tr>' +
 		'<tr><td>Y</td><td>Move popup location down</td></tr>' +
@@ -299,49 +299,49 @@ var rcxMain = {
 		'<tr><td>M</td><td>Next character</td></tr>' +
 		'<tr><td>N</td><td>Next word</td></tr>' +
 		'</table>',
-		
+
 /* 			'<tr><td>C</td><td>Copy to clipboard</td></tr>' +
 		'<tr><td>S</td><td>Save to file</td></tr>' + */
 
-	// Function which enables the inline mode of rikaikun
-	// Unlike rikaichan there is no lookup bar so this is the only enable.
+	// Function which enables the inline mode of rikaisensei
+	// Unlike rikaisensei there is no lookup bar so this is the only enable.
 	inlineEnable: function(tab, mode) {
 		if (!this.dict) {
 			//	var time = (new Date()).getTime();
 			if (!this.loadDictionary()) return;
 			//	time = (((new Date()).getTime() - time) / 1000).toFixed(2);
 		}
-		
+
 		// Send message to current tab to add listeners and create stuff
-		chrome.tabs.sendMessage(tab.id, {"type":"enable", "config":rcxMain.config});
+		browser.tabs.sendMessage(tab.id, {"type":"enable", "config":rcxMain.config});
 		this.enabled = 1;
-		
+
 		if (mode == 1) {
 			if (rcxMain.config.minihelp == 'true')
-				chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":rcxMain.miniHelp});
+				browser.tabs.sendMessage(tab.id, {"type":"showPopup", "text":rcxMain.miniHelp});
 			else
-				chrome.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Rikaikun enabled!'});
-		} 
-		chrome.browserAction.setBadgeBackgroundColor({"color":[255,0,0,255]});
-		chrome.browserAction.setBadgeText({"text":"On"});
+				browser.tabs.sendMessage(tab.id, {"type":"showPopup", "text":'Rikaisensei enabled!'});
+		}
+		browser.browserAction.setBadgeBackgroundColor({"color":[255,0,0,255]});
+		browser.browserAction.setBadgeText({"text":"On"});
 	},
 
-	// This function diables 
+	// This function diables
 	inlineDisable: function(tab, mode) {
 		// Delete dictionary object after we implement it
 		delete this.dict;
-		
+
 		this.enabled = 0;
-		chrome.browserAction.setBadgeBackgroundColor({"color":[0,0,0,0]});
-		chrome.browserAction.setBadgeText({"text":""});
+		browser.browserAction.setBadgeBackgroundColor({"color":[0,0,0,0]});
+		browser.browserAction.setBadgeText({"text":""});
 
 		// Send a disable message to all browsers
-		var windows = chrome.windows.getAll({"populate":true}, 
+		var windows = browser.windows.getAll({"populate":true},
 			function(windows) {
 				for (var i =0; i < windows.length; ++i) {
 					var tabs = windows[i].tabs;
 					for ( var j = 0; j < tabs.length; ++j) {
-						chrome.tabs.sendMessage(tabs[j].id, {"type":"disable"});
+						browser.tabs.sendMessage(tabs[j].id, {"type":"disable"});
 					}
 				}
 			});
@@ -351,7 +351,7 @@ var rcxMain = {
 		if (rcxMain.enabled) rcxMain.inlineDisable(tab, 1);
 			else rcxMain.inlineEnable(tab, 1);
 	},
-	
+
 	kanjiN: 1,
 	namesN: 2,
 
@@ -364,7 +364,7 @@ var rcxMain = {
 	resetDict: function() {
 		this.showMode = 0;
 	},
-	
+
 	sameDict: '0',
 	forceKanji: '1',
 	defaultDict: '2',
@@ -374,8 +374,7 @@ var rcxMain = {
 
 		switch (dictOption) {
 		case this.forceKanji:
-			var e = this.dict.kanjiSearch(text.charAt(0));
-			return e;
+			return this.dict.kanjiSearch(text.charAt(0));
 			break;
 		case this.defaultDict:
 			this.showMode = 0;
@@ -384,7 +383,7 @@ var rcxMain = {
 			this.showMode = (this.showMode + 1) % this.dictCount;
 			break;
 		}
-		
+
 		var m = this.showMode;
 		var e = null;
 
@@ -403,11 +402,11 @@ var rcxMain = {
 			if (e) break;
 			this.showMode = (this.showMode + 1) % this.dictCount;
 		} while (this.showMode != m);
-		
+
 		return e;
 	}
-	
-	
+
+
 
 };
 
